@@ -19,16 +19,16 @@ class XVector(nn.Module):
     def forward(self, framefeaseq):
         '''framefeaseq: [bsize, window_len, feature_size]
         '''
-        frame1out = self.frame1(framefeaseq)
-        frame2out = self.frame2(frame1out)
-        frame3out = self.frame3(frame2out)
-        frame4out = self.frame4(frame3out)
-        frame5out = self.frame5(frame4out)
+        frameout = self.frame1(framefeaseq)
+        frameout = self.frame2(frameout)
+        frameout = self.frame3(frameout)
+        frameout = self.frame4(frameout)
+        frameout = self.frame5(frameout)
         # [bsize, seqlen, nframeout] -> [bsize, nframeout]
-        frame_mean = torch.mean(frame5out, dim=1)
-        frame_var = torch.var(frame5out, dim=1)
+        frame_mean = torch.mean(frameout, dim=1)
+        frame_var = torch.var(frameout, dim=1)
         seglevelfea = torch.cat([frame_mean, frame_var], 1)
-        seg6out = nn.functional.relu(self.segment6(seglevelfea))
-        seg7out = nn.functional.relu(self.segment7(seg6out))
-        output = self.decoder(seg7out)
+        segout = nn.functional.relu(self.segment6(seglevelfea))
+        segout = nn.functional.relu(self.segment7(segout))
+        output = self.decoder(segout)
         return output
